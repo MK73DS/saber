@@ -191,7 +191,7 @@ class EditorPage extends ChangeNotifier implements HasSize {
     for (final Stroke stroke in strokes) {
       int penTypeComparison = stroke.penType.compareTo(newStroke.penType);
       int color = stroke.color.toARGB32();
-      if (penTypeComparison > 0) {
+      if (penTypeComparison < 0) {
         break; // this stroke's pen type comes after the new stroke's pen type
       } else if (stroke.penType == (Highlighter).toString() &&
           penTypeComparison == 0 &&
