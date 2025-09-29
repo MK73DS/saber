@@ -182,19 +182,15 @@ class EditorPage extends ChangeNotifier implements HasSize {
         if (backgroundImage != null) 'b': backgroundImage?.toJson(assets)
       };
 
-  /// Inserts a stroke, while keeping the strokes sorted by
-  /// pen type and color.
+  /// Inserts a stroke, while keeping Highlighters sorted by color.
   void insertStroke(Stroke newStroke) {
     int newStrokeColor = newStroke.color.toARGB32();
-
+    
     int index = 0;
     for (final Stroke stroke in strokes) {
-      int penTypeComparison = stroke.penType.compareTo(newStroke.penType);
       int color = stroke.color.toARGB32();
-      if (penTypeComparison < 0) {
-        break; // this stroke's pen type comes after the new stroke's pen type
-      } else if (stroke.penType == (Highlighter).toString() &&
-          penTypeComparison == 0 &&
+      if (stroke.penType == (Highlighter).toString() &&
+          newStroke.penType == (Highlighter).toString() &&
           color > newStrokeColor) {
         break; // this highlighter color comes after the new highlighter color
       }
@@ -207,10 +203,16 @@ class EditorPage extends ChangeNotifier implements HasSize {
   /// Sorts the strokes by pen type and color.
   void sortStrokes() {
     strokes.sort((Stroke a, Stroke b) {
-      int penTypeComparison = a.penType.compareTo(b.penType);
-      if (penTypeComparison != 0) return penTypeComparison;
-      if (a.penType != (Highlighter).toString()) return 0;
-      return a.color.toARGB32().compareTo(b.color.toARGB32());
+      if (a.penType == (Highlighter).toString()) {
+        if (b.penType == (Highlighter).toString())
+          return a.color.toARGB32().compareTo(b.color.toARGB32());
+        else return 1;
+      }
+      else {
+        if (b.penType == (Highlighter).toString())
+          return -1;
+        else return 0;
+      }
     });
   }
 
